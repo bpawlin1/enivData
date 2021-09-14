@@ -2,7 +2,9 @@
 
 This is a full stack app utilizing Java Spring, python, MySQL, Highcharts, Bootstrap, and jasperReports. 
 
-The application is deployed onto a Raspberry Pi using tomcat. 
+The viewer folder is the Java Spring application that is deployed onto a Raspberry Pi using tomcat. 
+
+The Sensor folder contains the python code to read the sensor data, display it on a oled display, and insert it into the MySQL database. 
 
 
 Data Dashboard:
