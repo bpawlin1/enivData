@@ -1,6 +1,6 @@
 # Environmental Data Viewer
 
-This is a full stack app utilizing Java Spring, python, MySQL, Highcharts, and jasperReports. 
+This is a full stack app utilizing Java Spring, python, MySQL, Highcharts, Bootstrap, and jasperReports. 
 
 The application is deployed onto a Raspberry Pi using tomcat. 
 
