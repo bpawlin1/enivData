@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Implementation-Title: Environmental Data
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: bpawling
+Implementation-Vendor-Id: com.environmentaldata
+Build-Jdk: 1.8.0_191
+Created-By: Maven Integration for Eclipse
+
