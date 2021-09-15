@@ -7,12 +7,12 @@ $.ajax({
 		
 		
 		var series = JSON.parse(result).temp;
-		drawLineChart( series);
+		drawGuageChart( series);
 	
 		
 		}
 })
-function drawLineChart( series){
+function drawGuageChart( series){
 var gaugeOptions = {
 		  chart: {
 		    type: 'solidgauge'
@@ -85,17 +85,17 @@ var gaugeOptions = {
 		  },
 
 		  series: [{
-    name: 'RPM',
-    data: [series],
-    dataLabels: {
-      format:
-        '<div style="text-align:center">' +
-        '<span style="font-size:25px">{y:.1f}</span><br/>' +
-        '<span style="font-size:12px;opacity:0.4">' +
-        '°F' +
-        '</span>' +
-        '</div>'
-    },
+    	  name: 'RPM',
+   		  data: [series],
+   		  dataLabels: {
+      		format:
+        		'<div style="text-align:center">' +
+        		'<span style="font-size:25px">{y:.1f}</span><br/>' +
+        		'<span style="font-size:12px;opacity:0.4">' +
+        		'°F' +
+        		'</span>' +
+        		'</div>'
+   		 },
     tooltip: {
       valueSuffix: ' revolutions/min'
     }
@@ -103,6 +103,5 @@ var gaugeOptions = {
 
 }));
 
-		
 		} ;
 		});

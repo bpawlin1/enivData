@@ -13,8 +13,11 @@ import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,8 +30,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
+
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 
 
 
@@ -39,6 +48,7 @@ public class App_Controller {
 	co2_service service;
 	co2Data_DAO dao;
 	
+	//Index and initial start page
 	@RequestMapping("/")
 	public String viewHomePage(Model model) {
 		long count = service.count();
@@ -63,6 +73,7 @@ public class App_Controller {
 		return "ListResults";
 	}
 	
+	//Co2 chart data
 	@RequestMapping("/chart")
 	@ResponseBody
 	public String getChartData()
@@ -86,7 +97,7 @@ public class App_Controller {
 		
 		return jsonObject.toString();
 	}
-	
+	//temp chart data
 	@RequestMapping("/tempchart")
 	@ResponseBody
 	public String getTempData()
@@ -116,7 +127,7 @@ public class App_Controller {
     }
 	
 	
-    
+	//create PDF
     @RequestMapping(value = "/view", method = RequestMethod.GET)
 	public void report(HttpServletResponse response) throws Exception {
 		response.setContentType("text/html");
@@ -129,5 +140,32 @@ public class App_Controller {
 		exporter.setExporterOutput(new SimpleHtmlExporterOutput(response.getWriter()));
 		exporter.exportReport();
 	}
+    
+    //Export to csv
+    @GetMapping("/view/export")
+    public void exportToCSV(HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String currentDateTime = dateFormatter.format(new Date());
+         
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=users_" + currentDateTime + ".csv";
+        response.setHeader(headerKey, headerValue);
+        
+        List<co2_data> listData = service.listAll();
+      
+ 
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+        String[] csvHeader = {"Record Id", "Device Name", "Date/Time", "Temperature","Humidity","Co2 Value","Co2 Rating"};
+        String[] nameMapping = {"id", "device", "datetime", "temp", "humidity", "co2", "co2_rating"};
+         
+        csvWriter.writeHeader(csvHeader);
+         
+        for (co2_data record : listData) {
+            csvWriter.write(record, nameMapping);
+        }
+         
+        csvWriter.close();
+}
 }
 
