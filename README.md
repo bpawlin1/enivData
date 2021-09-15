@@ -15,6 +15,7 @@ This application utilizes Java Spring, python, MySQL, Highcharts, Bootstrap, and
 - Add in a dynamic way to add more sensors.
 
 - Develop a user registration page.
+- Add page pagination on all results table
 - Develop admin functions 
 
   - Clear database for mutiple timeframes (day/week/month/year)
