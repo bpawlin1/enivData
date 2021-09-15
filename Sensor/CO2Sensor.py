@@ -21,10 +21,10 @@ scd = adafruit_scd30.SCD30(i2c)
 
 
 # Settings for database connection
-hostname = '127.0.0.1'
-username = 'bpawling'
-password = 'Bandit2015'
-database = 'Environmental_Data'
+hostname = 'IP Address'
+username = 'username'
+password = 'password'
+database = 'Scheme Name'
 
 device = 'dev-pi'
 
