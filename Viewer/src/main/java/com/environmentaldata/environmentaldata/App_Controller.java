@@ -16,9 +16,14 @@ import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -56,8 +61,24 @@ public class App_Controller {
 		System.out.println(count);
 		
 		List<co2_data> lastrecord = service.findFirstByOrderByDatetimeDesc();
-		model.addAttribute("lastrecord", lastrecord);
-		System.out.println(lastrecord);
+		model.addAttribute("lastrecord", lastrecord);		
+		for (co2_data product : lastrecord) 
+		{
+			String date = product.getDatetime();
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+			DateFormat formatter1 = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
+			String dateFormatted ="";
+			try {
+				dateFormatted = (formatter1.format(formatter.parse(date)));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String[] parts = dateFormatted.split(" ");
+		    //System.out.println("Date: " + parts[0]);
+		    model.addAttribute("date", parts[0]);
+		    model.addAttribute("time", parts[1]);
+		}
 		
 		List<co2_data> listdata = service.listAll();
 		model.addAttribute("listdata", listdata);
