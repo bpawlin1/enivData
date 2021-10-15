@@ -45,7 +45,7 @@
                     </div>
                     
                     <tr th:each="records : ${lastrecord}">
-                    
+                   
                     <div class="row">
                         <div class="col-md-6 col-xl-3 mb-4">
                             <div class="card shadow border-start-primary py-2">
@@ -53,7 +53,7 @@
                                     <div class="row align-items-center no-gutters">
                                         <div class="col me-2">
                                             <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>Current Rating</span></div>
-                                            <div class="text-dark fw-bold h5 mb-0"><span><td th:text="${records.datetime}"></span></div>
+                                            <div class="text-dark fw-bold h5 mb-0"><span><td th:text="${date}"></span></div> <div class="text-dark fw-bold h5 mb-0"></Span><td th:text ="  ${time}">/span></div>
                                         </div>
                                     </div>
                                 </div>
