@@ -61,8 +61,12 @@ public class App_Controller {
 		System.out.println(count);
 		
 		List<co2_data> lastrecord = service.findFirstByOrderByDatetimeDesc();
+<<<<<<< HEAD
 		model.addAttribute("lastrecord", lastrecord);	
 		
+=======
+		model.addAttribute("lastrecord", lastrecord);		
+>>>>>>> eb27d9a8130fd51a2c9546583aa4bb1ae3d7b008
 		for (co2_data product : lastrecord) 
 		{
 			String date = product.getDatetime();
