@@ -10,6 +10,7 @@
 #include <SPI.h>
 #include <Adafruit_BMP280.h>
 #include <ArduinoJson.h>
+#include "SdsDustSensor.h"
  
 const char* ssid = "wifi";  // Enter SSID here
 const char* password = "Bandit2015_69236";
@@ -24,9 +25,19 @@ float humidityReading;
 float bmpTemp;
 float bmpPressure;
 float bmpAltitude;
- 
+float pm25Reading;
+float pm10Reading;
+
+int rxPin = 2;
+int txPin = 14;
+SdsDustSensor sds(rxPin, txPin);
+
 // Serving Hello world
 void getSensorData() {
+
+  PmResult pm = sds.readPm();
+
+  
   sensors_event_t humidity, temp;
   
   uint32_t timestamp = millis();
@@ -38,7 +49,9 @@ void getSensorData() {
     doc["bmpTemp"] = bmp.readTemperature() * 9/5 + 32;
     doc["bmpPressure"] = bmp.readPressure() / 3386.39;
     doc["bmpAltitude"] = bmp.readAltitude(1013.25);
-    
+    doc["pm25Reading"] = pm.pm25;
+    doc["pm10Reading"] = pm.pm10;
+ 
  
       Serial.print(F("Stream..."));
       String buf;
@@ -59,7 +72,7 @@ void restServerRouting() {
 void handle_OnConnect() {
 
   sensors_event_t humidity, temp;
-  
+  PmResult pm = sds.readPm();
   uint32_t timestamp = millis();
   sht4.getEvent(&humidity, &temp);// populate temp and humidity objects with fresh data
 
@@ -67,8 +80,10 @@ void handle_OnConnect() {
   bmpTemp = bmp.readTemperature() * 9/5 + 32;
     bmpPressure = bmp.readPressure() / 3386.39;
     bmpAltitude = bmp.readAltitude(1013.25);
+    pm25Reading = pm.pm25;
+    pm10Reading = pm.pm10;
   
-  server.send(200, "text/html", SendHTML(bmpTemp,humidityReading,bmpPressure,bmpAltitude)); 
+  server.send(200, "text/html", SendHTML(bmpTemp,humidityReading,bmpPressure,bmpAltitude,pm25Reading,pm10Reading)); 
   Serial.println("Connection");
 }
  
@@ -88,7 +103,7 @@ void handleNotFound() {
   server.send(404, "text/plain", message);
 }
 
-String SendHTML(float bmpTemp,float humidityReading,float bmpPressure,float bmpAltitude){
+String SendHTML(float bmpTemp,float humidityReading,float bmpPressure,float bmpAltitude, float pm25Reading, float pm10Reading){
   String ptr = "<!DOCTYPE html> <html>\n";
   ptr +="<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\n";
   ptr +="<title>ESP32 Weather Station</title>\n";
@@ -112,6 +127,12 @@ String SendHTML(float bmpTemp,float humidityReading,float bmpPressure,float bmpA
   ptr +="<p>Altitude: ";
   ptr +=bmpAltitude;
   ptr +="m</p>";
+  ptr +="<p>PM2.5: ";
+  ptr +=pm25Reading;
+  ptr +="</p>";
+  ptr +="<p>PM10: ";
+  ptr +=pm10Reading;
+  ptr +="</p>";
   ptr +="</div>\n";
   ptr +="</body>\n";
   ptr +="</html>\n";
@@ -123,7 +144,7 @@ void setup(void) {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.println("");
- 
+ sds.begin();
   // Wait for connection
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
